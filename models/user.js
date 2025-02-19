@@ -1,5 +1,9 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.js')
+const {
+  DataTypes
+}=require('sequelize')
+const {
+  sequelize
+}=require('../config/db')
 
 const User = sequelize.define('User', {
   // Model attributes are defined here
@@ -13,12 +17,10 @@ const User = sequelize.define('User', {
   }
 }, {
   // Other model options go here
-  tableName: 'tables',
-  createdAt: 'cteated_at',
-  updatedAt: 'updated_at'
+  tableName: 'user',
+  timestamps: true
 });
 
-// `sequelize.define` also returns the model
-console.log(User === sequelize.models.User); // true
+module.exports = User;
 
-module.exports = User; // Export your model
+
