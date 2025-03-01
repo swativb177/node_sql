@@ -9,13 +9,20 @@ const User = sequelize.define('User', {
   // Model attributes are defined here
   firstName: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true,
   },
   lastName: {
     type: DataTypes.STRING
     // allowNull defaults to true
+  },
+  address:{
+    type:DataTypes.TEXT
+  },
+  password:{
+    type: DataTypes.STRING
   }
-}, {
+},{
   // Other model options go here
   tableName: 'user',
   timestamps: true
