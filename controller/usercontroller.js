@@ -141,6 +141,40 @@ const update = async (req, res) => {
   }
 };
 
+const Delterow = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: `User with ID ${userId} not found.`,
+      });
+    }
+
+   
+
+    const updatedUser = await user.update({
+      status: false
+    });
+
+    res.status(200).json({
+      message: 'User successfully deleted',
+      user: updatedUser,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Server Error' });
+  }
+};
 
 
-module.exports = {create,fetch,update};
+
+
+module.exports = {create,fetch,update,Delterow};
