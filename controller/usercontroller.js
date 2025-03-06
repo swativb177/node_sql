@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 const User = require('../models/user');
 
 const schema = Joi.object({
@@ -23,8 +24,19 @@ const schema = Joi.object({
     'string.min': '"lastName" should have a minimum length of {#limit}',
     'string.max': '"lastName" should have a maximum length of {#limit}',
     'any.required': '"lastName" is a required field',
+  }),
+  mobile: Joi.string().min(2).max(50).pattern(/^[6-9][0-9]{9}$/).required().messages({
+    'string.empty': 'Mobile number is required', 
+    'string.pattern.base': 'Mobile number must start with 6-9 and have exactly 10 digits',  
+    'string.min': 'Mobile number must be at least 2 characters long', 
+    'string.max': 'Mobile number must be less than 50 characters long'  
+  }),
+  email: Joi.string().min(2).max(50).pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/).required().messages({
+    'string.empty': 'email address is required', 
+    'string.pattern.base': 'the emial address invalid,please enter valid email address',  
+    'string.min': 'email address must be at least 2 characters long', 
+    'string.max': 'email address must be less than 50 characters long'  
   })
-
 });
 
 const create = async (req, res) => {
@@ -33,20 +45,26 @@ const create = async (req, res) => {
 
     if (error) {
       return res.status(400).json({
-        message: 'Validation failed',
-        details: error.details,
+        message: error.details[0].message,
       });
     }
 
-    const { firstName, lastName, password } = req.body;
+    const { firstName, lastName, password,mobile,email } = req.body;
 
-    const existingUser = await User.findOne({ where: { firstName } });
-
+    const existingUser = await User.findOne({ where: { [Op.or]: [{ mobile }, { email }] } });
     if (existingUser) {
+    if (existingUser.mobile===mobile) {
       return res.status(400).json({
-        message: `The firstName "${firstName}" is already taken. Please choose a different one.`,
+        message: `The mobile "${mobile}" is already taken. Please choose a different one.`,
       });
     }
+
+    if (existingUser.email===email) {
+      return res.status(400).json({
+        message: `The mobile "${email}" is already taken. Please choose a different one.`,
+      });
+    }
+  }
 
     const hashedPassword = await bcrypt.hash(password, 10); 
 
@@ -54,20 +72,20 @@ const create = async (req, res) => {
       firstName,
       lastName,
       password: hashedPassword, 
+      mobile,
+      email
     });
 
-    res.status(200).send(data);
+    res.status(200).send({messege: "the user added succeffuly",data});
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: 'Server Error' });
   }
 };
 
-
 const fetch = async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-
 
     if (isNaN(userId)) {  
       return res.status(400).json({ message: 'Invalid user ID' });
@@ -156,16 +174,18 @@ const Delterow = async (req, res) => {
         message: `User with ID ${userId} not found.`,
       });
     }
-
-   
+    if(!user.status){
+      return res.status(404).json({
+        message: `User already delted.`,
+      });
+    }
 
     const updatedUser = await user.update({
       status: false
     });
 
     res.status(200).json({
-      message: 'User successfully deleted',
-      user: updatedUser,
+      message: 'User successfully deleted'
     });
 
   } catch (error) {

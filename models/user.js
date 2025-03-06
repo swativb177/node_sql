@@ -9,8 +9,7 @@ const User = sequelize.define('User', {
   // Model attributes are defined here
   firstName: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
+    allowNull: false
   },
   lastName: {
     type: DataTypes.STRING
@@ -20,6 +19,12 @@ const User = sequelize.define('User', {
     type:DataTypes.TEXT
   },
   password:{
+    type: DataTypes.STRING
+  },
+  mobile:{
+    type : DataTypes.STRING
+  },
+  email:{
     type: DataTypes.STRING
   },
   status:{

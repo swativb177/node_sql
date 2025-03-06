@@ -2,7 +2,8 @@ const { Sequelize, DataTypes, Model } = require('sequelize');
 
 const sequelize = new Sequelize('demo_db', 'root', '', {
     host: 'localhost',
-    dialect: 'mysql'
+    dialect: 'mysql',
+    logging : false
   });
 
   const connectdb =  async () => {
