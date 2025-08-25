@@ -1,3 +1,4 @@
+
 const { Sequelize, DataTypes, Model } = require('sequelize');
 
 const sequelize = new Sequelize('demo_db', 'root', '', {

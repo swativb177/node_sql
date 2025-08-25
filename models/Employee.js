@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.js'); // No need to destructure if it's a default export
+const {sequelize} = require('../config/db.js'); 
 
 const Employee = sequelize.define('Employee', {
   firstName: {
@@ -17,13 +17,11 @@ const Employee = sequelize.define('Employee', {
   },
   address: {
     type: DataTypes.TEXT,
-  },
-  role: {
-    type: DataTypes.STRING,
   }
 }, {
-  tableName: 'Employee',  // Optional: custom table name
+  tableName: 'employee',  // Optional: custom table name
   timestamps: true,        // Adds createdAt and updatedAt
 });
+
 
 module.exports = Employee;

@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const userrout = require('./route/userrout');
 const TableRoute = require('./route/table');
+const EmployeeRoute = require('./route/EmployeeRoute');
 
 const {
   connectdb,sequelize
@@ -13,11 +14,11 @@ app.use(bodyParser.json())
 
 app.use("/user",userrout)
 app.use("/table",TableRoute)
+app.use("/employee",EmployeeRoute)
 
 app.get('/', function (req, res) {
   res.send('Hello World')
 })
-
 
 //User.sync({ force: true });
 //contact.sync({ force: true });
@@ -35,11 +36,8 @@ const start = async() => {
  }
 }
 
-const error = (req,res)=>{
-   return res.status(404).json({ message: 'Path Not Found' });
-};
 
-app.use('*', error);
+
 
 app.listen(5000,()=>{
     console.log("App will run on: http://localhost:5000")
